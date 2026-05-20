@@ -1,239 +1,187 @@
-from flask import Flask, render_template, request, redirect, url_for
-import requests
-import random
-import re
+from flask import Flask, render_template, request, redirect, url_for, session
 from pymongo import MongoClient
-from bs4 import BeautifulSoup
+import random
 
 app = Flask(__name__)
+app.secret_key = "ecoquiz_secret_2024"
 
-# --- Configurações ---
-# Conexão com MongoDB
+# Filtro enumerate para Jinja2
+app.jinja_env.globals.update(enumerate=enumerate)
+
+# --- MongoDB ---
 try:
     client = MongoClient("mongodb+srv://ecoquiz:hackathon@cluster0.pbhclmb.mongodb.net/")
     db = client.quiz_db
-    users_collection = db.users
-    print("Conexão com MongoDB estabelecida com sucesso!")
+    ranking_collection = db.ranking
+    print("✅ MongoDB conectado!")
 except Exception as e:
-    print(f"Erro ao conectar com MongoDB: {e}")
+    print(f"❌ Erro MongoDB: {e}")
     client = None
 
-# Perguntas pré-definidas sobre sustentabilidade
-SUSTAINABILITY_QUESTIONS = [
+# --- Perguntas de Sustentabilidade (nível 5º ano) ---
+PERGUNTAS = [
     {
-        "question": "O que significa o conceito de 'Desenvolvimento Sustentável'?",
-        "options": [
-            "Desenvolvimento que atende às necessidades do presente sem comprometer a capacidade das gerações futuras de atenderem às suas próprias necessidades",
-            "Desenvolvimento que prioriza apenas o crescimento econômico",
-            "Desenvolvimento que ignora completamente os aspectos ambientais",
-            "Desenvolvimento que foca apenas no lucro imediato"
-        ],
-        "answer": "Desenvolvimento que atende às necessidades do presente sem comprometer a capacidade das gerações futuras de atenderem às suas próprias necessidades"
+        "pergunta": "O que devemos fazer com garrafas plásticas para ajudar o meio ambiente?",
+        "opcoes": ["Jogar no rio", "Reciclar ou reutilizar", "Queimar no quintal", "Enterrar na terra"],
+        "resposta": "Reciclar ou reutilizar"
     },
     {
-        "question": "Qual é a principal fonte de energia renovável mais utilizada no mundo?",
-        "options": [
-            "Energia nuclear",
-            "Energia hidrelétrica",
-            "Energia solar",
-            "Energia eólica"
+        "pergunta": "Por que é importante economizar água em casa?",
+        "opcoes": [
+            "Porque a água é infinita",
+            "Para pagar menos na conta",
+            "Porque a água limpa é um recurso limitado e precioso",
+            "Para deixar mais água para os peixes"
         ],
-        "answer": "Energia hidrelétrica"
+        "resposta": "Porque a água limpa é um recurso limitado e precioso"
     },
     {
-        "question": "O que é a 'Pegada de Carbono'?",
-        "options": [
-            "A quantidade de CO2 que uma pessoa ou organização emite na atmosfera",
-            "O tamanho do sapato de uma pessoa",
-            "A quantidade de lixo que uma pessoa produz",
-            "O consumo de água de uma pessoa"
+        "pergunta": "O que é reciclagem?",
+        "opcoes": [
+            "Jogar o lixo em qualquer lugar",
+            "Transformar materiais usados em novos produtos",
+            "Esconder o lixo embaixo da terra",
+            "Vender objetos velhos"
         ],
-        "answer": "A quantidade de CO2 que uma pessoa ou organização emite na atmosfera"
+        "resposta": "Transformar materiais usados em novos produtos"
     },
     {
-        "question": "Qual é o principal gás responsável pelo efeito estufa?",
-        "options": [
-            "Oxigênio (O2)",
-            "Nitrogênio (N2)",
-            "Dióxido de Carbono (CO2)",
-            "Hidrogênio (H2)"
+        "pergunta": "Qual dessas atitudes ajuda a economizar energia elétrica?",
+        "opcoes": [
+            "Deixar as luzes acesas em todos os cômodos",
+            "Usar o ar-condicionado com a janela aberta",
+            "Apagar as luzes ao sair de um cômodo",
+            "Deixar o televisor ligado sem assistir"
         ],
-        "answer": "Dióxido de Carbono (CO2)"
+        "resposta": "Apagar as luzes ao sair de um cômodo"
     },
     {
-        "question": "O que significa 'Economia Circular'?",
-        "options": [
-            "Um sistema econômico que mantém produtos e materiais em uso pelo maior tempo possível",
-            "Uma economia que gira em torno do dinheiro",
-            "Um sistema que prioriza apenas o consumo",
-            "Uma economia baseada apenas em recursos não renováveis"
+        "pergunta": "O que acontece quando as florestas são desmatadas?",
+        "opcoes": [
+            "Surgem mais animais silvestres",
+            "O ar fica mais limpo",
+            "Muitos animais perdem seu habitat e podem desaparecer",
+            "Chove mais na região"
         ],
-        "answer": "Um sistema econômico que mantém produtos e materiais em uso pelo maior tempo possível"
+        "resposta": "Muitos animais perdem seu habitat e podem desaparecer"
     },
     {
-        "question": "Qual é a prática mais eficaz para reduzir o impacto ambiental do lixo doméstico?",
-        "options": [
-            "Queimar o lixo",
-            "Jogar tudo no aterro sanitário",
-            "Reduzir, reutilizar e reciclar",
-            "Ignorar o problema"
+        "pergunta": "Para que serve a coleta seletiva de lixo?",
+        "opcoes": [
+            "Para deixar as ruas mais coloridas",
+            "Para separar os materiais e facilitar a reciclagem",
+            "Para juntar todo o lixo em um único lugar",
+            "Para queimar o lixo com mais facilidade"
         ],
-        "answer": "Reduzir, reutilizar e reciclar"
+        "resposta": "Para separar os materiais e facilitar a reciclagem"
     },
     {
-        "question": "O que é 'Biodiversidade'?",
-        "options": [
-            "A variedade de vida na Terra, incluindo plantas, animais e microrganismos",
-            "Apenas a quantidade de árvores em uma floresta",
-            "O número de pessoas em uma cidade",
-            "A quantidade de dinheiro em um banco"
+        "pergunta": "O que é energia solar?",
+        "opcoes": [
+            "Energia gerada pela queima de carvão",
+            "Energia que vem da força do vento",
+            "Energia gerada aproveitando a luz do Sol",
+            "Energia produzida pela água dos rios"
         ],
-        "answer": "A variedade de vida na Terra, incluindo plantas, animais e microrganismos"
+        "resposta": "Energia gerada aproveitando a luz do Sol"
     },
     {
-        "question": "Qual é o principal objetivo do Acordo de Paris?",
-        "options": [
-            "Manter o aumento da temperatura média global abaixo de 2°C em relação aos níveis pré-industriais",
-            "Aumentar a produção de combustíveis fósseis",
-            "Reduzir a população mundial",
-            "Aumentar o consumo de energia"
+        "pergunta": "Por que devemos evitar o uso excessivo de sacolas plásticas?",
+        "opcoes": [
+            "Porque são muito caras",
+            "Porque demoram centenas de anos para se decompor na natureza",
+            "Porque são muito pesadas",
+            "Porque deixam as compras mais difíceis"
         ],
-        "answer": "Manter o aumento da temperatura média global abaixo de 2°C em relação aos níveis pré-industriais"
+        "resposta": "Porque demoram centenas de anos para se decompor na natureza"
     },
     {
-        "question": "O que é 'Agricultura Sustentável'?",
-        "options": [
-            "Práticas agrícolas que protegem o meio ambiente e a saúde humana",
-            "Agricultura que usa apenas produtos químicos",
-            "Agricultura que destrói o solo",
-            "Agricultura que ignora a conservação da água"
+        "pergunta": "O que significa 'reduzir, reutilizar e reciclar'?",
+        "opcoes": [
+            "Comprar mais coisas novas sempre que possível",
+            "Jogar fora tudo que não usa mais",
+            "Consumir menos, aproveitar os objetos e reciclar o lixo",
+            "Guardar todo o lixo dentro de casa"
         ],
-        "answer": "Práticas agrícolas que protegem o meio ambiente e a saúde humana"
+        "resposta": "Consumir menos, aproveitar os objetos e reciclar o lixo"
     },
     {
-        "question": "Qual é o impacto mais significativo do desmatamento?",
-        "options": [
-            "Perda de biodiversidade e aumento das emissões de CO2",
-            "Aumento da produção de oxigênio",
-            "Melhoria da qualidade do ar",
-            "Redução do efeito estufa"
+        "pergunta": "Qual das opções é um exemplo de energia renovável?",
+        "opcoes": [
+            "Petróleo",
+            "Carvão mineral",
+            "Gás natural",
+            "Energia eólica (vento)"
         ],
-        "answer": "Perda de biodiversidade e aumento das emissões de CO2"
+        "resposta": "Energia eólica (vento)"
     }
 ]
 
-# --- Funções Auxiliares ---
-
-def get_summary(topic):
-    """Busca o resumo de uma página da Wikipedia em português."""
-    try:
-        url = f"https://pt.wikipedia.org/api/rest_v1/page/summary/{topic}"
-        res = requests.get(url, timeout=5).json()
-        text = res.get("extract", "")
-        return text
-    except requests.exceptions.RequestException:
-        return ""
-
-def generate_question(text, topic):
-    """Gera uma pergunta com 4 opções a partir do texto."""
-    # Remove texto entre parênteses e tags HTML para evitar confusão
-    clean_text = re.sub(r'\s*\(.*?\)\s*', '', text)
-    soup = BeautifulSoup(clean_text, 'html.parser')
-    clean_text = soup.get_text()
-    
-    # Separa o texto em frases
-    sentences = [s.strip() for s in clean_text.split('.') if s.strip() and len(s) > 20]
-    
-    if len(sentences) < 2:
-        return None
-    
-    # Escolhe uma frase aleatória como a resposta correta
-    correct_sentence = random.choice(sentences)
-    
-    # Cria opções incorretas de forma genérica para não serem óbvias
-    wrong_options = [
-        f"A afirmação 'Não se relaciona com o tema de {topic.replace('_', ' ')}' está correta.",
-        f"A afirmação 'É o oposto do conceito de {topic.replace('_', ' ')}' está correta.",
-        "A principal característica é a destruição da natureza para lucro.",
-        "É um conceito puramente econômico, sem preocupações sociais ou ambientais."
-    ]
-    random.shuffle(wrong_options)
-    
-    # Pega 3 opções incorretas e garante que a lista final tenha 4 itens
-    options = [correct_sentence] + wrong_options[:3]
-    random.shuffle(options)
-    
-    # Cria a pergunta
-    question = f"Qual das seguintes afirmações sobre '{topic.replace('_', ' ')}' está correta?"
-    
-    return {
-        "question": question,
-        "options": options,
-        "answer": correct_sentence
-    }
-
-# --- Rotas da Aplicação ---
 
 @app.route('/')
 def index():
-    """Rota para a página inicial."""
     return render_template('index.html')
 
-@app.route('/quiz', methods=['POST', 'GET'])
+
+@app.route('/quiz', methods=['POST'])
 def quiz():
-    """Rota para a página do quiz."""
-    name = request.form.get('name', 'Anônimo')
-    
-    # Usa as perguntas pré-definidas sobre sustentabilidade
-    questions = SUSTAINABILITY_QUESTIONS.copy()
-    
-    # Embaralha as perguntas para que apareçam em ordem diferente a cada vez
-    random.shuffle(questions)
-    
-    print(f"✅ Total de perguntas geradas: {len(questions)}")
-    
-    return render_template('quiz.html', questions=questions, name=name)
+    nome = request.form.get('nome', '').strip()
+    if not nome:
+        return redirect(url_for('index'))
 
-@app.route('/submit', methods=['POST'])
-def submit():
-    """Rota para receber o resultado do quiz e salvar no ranking."""
-    score = 0
-    name = request.form.get('name')
-    
-    if not name or name == "Anônimo":
-        return redirect(url_for('ranking'))
+    session['nome'] = nome
+    perguntas = PERGUNTAS.copy()
+    random.shuffle(perguntas)
+    session['perguntas'] = perguntas
 
-    # Itera sobre todas as perguntas (até 10) 
-    for i in range(1, 11): 
-        user_answer = request.form.get(f'q{i}')
-        correct_answer = request.form.get(f'correct{i}')
+    return render_template('quiz.html', perguntas=perguntas, nome=nome, total=len(perguntas))
 
-        # Garante que a comparação seja exata e sem espaços extras
-        if user_answer and correct_answer and user_answer.strip() == correct_answer.strip():
-            score += 1
-            print(f"Pergunta {i}: CORRETA - Usuário: '{user_answer.strip()}' | Correta: '{correct_answer.strip()}'")
-        else:
-            print(f"Pergunta {i}: INCORRETA - Usuário: '{user_answer}' | Correta: '{correct_answer}'")
-    
-    print(f"Recebendo dados do formulário: Nome={name}, Pontuação={score}")
-    
+
+@app.route('/resultado', methods=['POST'])
+def resultado():
+    nome = session.get('nome', 'Anônimo')
+    perguntas = session.get('perguntas', [])
+
+    acertos = 0
+    resultados = []
+
+    for i, p in enumerate(perguntas):
+        resposta_usuario = request.form.get(f'q{i}', '')
+        correta = p['resposta']
+        acertou = resposta_usuario.strip() == correta.strip()
+        if acertou:
+            acertos += 1
+        resultados.append({
+            'pergunta': p['pergunta'],
+            'opcoes': p['opcoes'],
+            'resposta_usuario': resposta_usuario,
+            'resposta_correta': correta,
+            'acertou': acertou
+        })
+
+    total = len(perguntas)
+
+    # Salva no MongoDB
     if client:
         try:
-            users_collection.insert_one({"name": name, "score": score})
-            print("Dados inseridos no MongoDB!")
+            ranking_collection.insert_one({"nome": nome, "acertos": acertos, "total": total})
+            print(f"✅ Salvo: {nome} - {acertos}/{total}")
         except Exception as e:
-            print(f"Erro ao inserir no MongoDB: {e}")
-    
-    return redirect(url_for('ranking'))
+            print(f"❌ Erro ao salvar: {e}")
+
+    return render_template('resultado.html', nome=nome, acertos=acertos, total=total, resultados=resultados)
+
 
 @app.route('/ranking')
 def ranking():
-    """Rota para exibir a página de ranking."""
-    top_scores = []
+    top = []
     if client:
-        top_scores = list(users_collection.find().sort("score", -1).limit(10))
-        print(f"Resultados do ranking: {top_scores}")
-    return render_template('ranking.html', top_scores=top_scores)
+        try:
+            top = list(ranking_collection.find({}, {'_id': 0}).sort("acertos", -1).limit(10))
+        except Exception as e:
+            print(f"❌ Erro ao buscar ranking: {e}")
+    return render_template('ranking.html', top=top)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

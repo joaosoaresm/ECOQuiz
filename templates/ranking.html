@@ -1,23 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Ranking EcoQuiz 🏆</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ECOQuiz - Ranking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 40%, #52b788 100%);
+      font-family: 'Nunito', sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 36px 16px 60px;
+    }
+
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.4rem; color: white;
+    }
+    header p { color: #b7e4c7; font-weight: 600; margin-top: 4px; }
+
+    .ranking-card {
+      background: white; border-radius: 24px;
+      width: 100%; max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+      animation: popIn 0.5s ease;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ranking-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      border-bottom: 1.5px solid #f0faf4;
+      transition: background 0.15s;
+    }
+    .ranking-item:last-child { border-bottom: none; }
+    .ranking-item:hover { background: #f8fffe; }
+
+    .pos {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem; min-width: 36px;
+      text-align: center;
+    }
+    .pos-1 { color: #f4a10a; }
+    .pos-2 { color: #9ca3af; }
+    .pos-3 { color: #cd7c3f; }
+    .pos-n { color: #74c69d; }
+
+    .nome-jogador {
+      flex: 1; font-weight: 700; font-size: 1rem; color: #1a472a;
+    }
+
+    .score-badge {
+      background: linear-gradient(135deg, #2d6a4f, #52b788);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      padding: 6px 16px; border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .empty {
+      padding: 48px 24px; text-align: center;
+      color: #74c69d; font-weight: 700; font-size: 1rem;
+    }
+
+    .btn-voltar {
+      margin-top: 28px;
+      padding: 14px 32px;
+      background: white; color: #2d6a4f;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem; border: none;
+      border-radius: 14px; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      transition: transform 0.15s;
+    }
+    .btn-voltar:hover { transform: translateY(-2px); }
+  </style>
 </head>
 <body>
-    <div class="container ranking-container">
-        <h1>Ranking dos Campeões 🏆</h1>
-        <ol class="ranking-list">
-            {% for user in top_scores %}
-                <li>
-                    <span class="ranking-name">{{ user.name }}</span>
-                    <span class="ranking-score">{{ user.score }}/10</span>
-                </li>
-            {% else %}
-                <p>Nenhum jogador no ranking ainda. Seja o primeiro!</p>
-            {% endfor %}
-        </ol>
-        <a href="{{ url_for('index') }}" class="btn secondary-btn">Voltar para o Início</a>
+
+<header>
+  <h1>🏆 Ranking</h1>
+  <p>Os maiores guardiões do planeta</p>
+</header>
+
+<div class="ranking-card">
+  {% if top %}
+    {% for jogador in top %}
+    <div class="ranking-item">
+      <span class="pos {% if loop.index == 1 %}pos-1{% elif loop.index == 2 %}pos-2{% elif loop.index == 3 %}pos-3{% else %}pos-n{% endif %}">
+        {% if loop.index == 1 %}🥇
+        {% elif loop.index == 2 %}🥈
+        {% elif loop.index == 3 %}🥉
+        {% else %}#{{ loop.index }}{% endif %}
+      </span>
+      <span class="nome-jogador">{{ jogador.nome }}</span>
+      <span class="score-badge">{{ jogador.acertos }}/{{ jogador.total }} ✅</span>
     </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">Nenhum resultado ainda.<br/>Seja o primeiro! 🌱</div>
+  {% endif %}
+</div>
+
+<a href="/" class="btn-voltar">🌿 Jogar de Novo</a>
+
 </body>
 </html>

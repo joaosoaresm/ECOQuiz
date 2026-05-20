@@ -1,18 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>EcoQuiz Sustentabilidade 🌱</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ECOQuiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 40%, #52b788 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      overflow: hidden;
+    }
+
+    .leaves {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .leaf {
+      position: absolute; font-size: 2rem; opacity: 0.15;
+      animation: float 8s ease-in-out infinite;
+    }
+    .leaf:nth-child(1)  { top: 10%; left: 5%;  animation-delay: 0s; }
+    .leaf:nth-child(2)  { top: 20%; right: 8%; animation-delay: 1s; }
+    .leaf:nth-child(3)  { top: 60%; left: 3%;  animation-delay: 2s; }
+    .leaf:nth-child(4)  { top: 75%; right: 5%; animation-delay: 3s; }
+    .leaf:nth-child(5)  { top: 40%; left: 90%; animation-delay: 1.5s; }
+    .leaf:nth-child(6)  { top: 85%; left: 40%; animation-delay: 2.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    .card {
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,0.97);
+      border-radius: 28px;
+      padding: 50px 48px 44px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      text-align: center;
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85) translateY(30px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .logo { font-size: 3.8rem; margin-bottom: 4px; }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.8rem;
+      color: #1a472a;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+
+    .subtitle {
+      color: #52b788;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 8px 0 32px;
+      letter-spacing: 0.5px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #2d6a4f;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2.5px solid #b7e4c7;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-family: 'Nunito', sans-serif;
+      color: #1a472a;
+      background: #f0faf4;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #52b788;
+      box-shadow: 0 0 0 4px rgba(82,183,136,0.15);
+    }
+
+    button {
+      margin-top: 22px;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #2d6a4f, #52b788);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 6px 20px rgba(45,106,79,0.4);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(45,106,79,0.5);
+    }
+    button:active { transform: translateY(0); }
+
+    .ranking-link {
+      display: block;
+      margin-top: 18px;
+      color: #74c69d;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .ranking-link:hover { color: #2d6a4f; }
+  </style>
 </head>
 <body>
-    <div class="container welcome-card">
-        <h1>EcoQuiz Sustentabilidade 🌱</h1>
-        <p>Teste seus conhecimentos sobre o meio ambiente e sustentabilidade!</p>
-        <form action="{{ url_for('quiz') }}" method="post" class="name-form">
-            <input type="text" name="name" placeholder="Digite seu nome" required>
-            <button type="submit" class="btn">Começar Quiz</button>
-        </form>
-        <a href="{{ url_for('ranking') }}" class="btn secondary-btn">Ver Ranking</a>
-    </div>
+  <div class="leaves">
+    <span class="leaf">🌿</span>
+    <span class="leaf">🍃</span>
+    <span class="leaf">🌱</span>
+    <span class="leaf">♻️</span>
+    <span class="leaf">🌍</span>
+    <span class="leaf">🍀</span>
+  </div>
+
+  <div class="card">
+    <div class="logo">🌿</div>
+    <h1>ECOQuiz</h1>
+    <p class="subtitle">Quiz de Sustentabilidade</p>
+
+    <form action="/quiz" method="POST">
+      <label for="nome">Como você se chama?</label>
+      <input type="text" id="nome" name="nome" placeholder="Digite seu nome..." required autocomplete="off" maxlength="30"/>
+      <button type="submit">Começar Quiz 🚀</button>
+    </form>
+
+    <a href="/ranking" class="ranking-link">🏆 Ver Ranking</a>
+  </div>
 </body>
 </html>
