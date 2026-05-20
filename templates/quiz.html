@@ -1,242 +1,215 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ECOQuiz - Perguntas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ECOQuiz - Perguntas</title>
 
-        body {
-        min-height: 100vh;
-        background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 40%, #52b788 100%);
-        font-family: 'Nunito', sans-serif;
-        display: flex; flex-direction: column; align-items: center;
-        padding: 30px 16px 50px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 
-        header {
-        text-align: center; margin-bottom: 28px;
-        }
-        header h1 {
-        font-family: 'Fredoka One', cursive;
-        font-size: 2.2rem; color: white; letter-spacing: 1px;
-        }
-        header p { color: #b7e4c7; font-size: 0.95rem; font-weight: 600; margin-top: 4px; }
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Barra de progresso */
-        .progress-bar-wrap {
-        width: 100%; max-width: 640px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 99px; height: 10px; margin-bottom: 28px; overflow: hidden;
-        }
-        .progress-bar-fill {
-        height: 100%;
-        background: #b7e4c7;
-        border-radius: 99px;
-        transition: width 0.4s ease;
-        }
+body {
+min-height: 100vh;
+background: linear-gradient(135deg, #1a472a, #52b788);
+font-family: 'Nunito', sans-serif;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 30px;
+}
 
-        /* Cards de pergunta */
-        .question-card {
-        background: white;
-        border-radius: 24px;
-        padding: 36px 36px 28px;
-        width: 100%; max-width: 640px;
-        box-shadow: 0 16px 48px rgba(0,0,0,0.2);
-        display: none;
-        animation: slideIn 0.4s ease;
-        }
-        .question-card.active { display: block; }
+header {
+text-align: center;
+margin-bottom: 20px;
+}
 
-        @keyframes slideIn {
-        from { opacity: 0; transform: translateX(40px); }
-        to   { opacity: 1; transform: translateX(0); }
-        }
+header h1 {
+color: white;
+font-family: 'Fredoka One';
+}
 
-        .question-num {
-        font-size: 0.8rem; font-weight: 700;
-        color: #52b788; letter-spacing: 1px;
-        text-transform: uppercase; margin-bottom: 10px;
-        }
+header p {
+color: #b7e4c7;
+}
 
-        .question-text {
-        font-size: 1.15rem; font-weight: 700;
-        color: #1a472a; line-height: 1.5;
-        margin-bottom: 24px;
-        }
+.progress-bar-wrap {
+width: 100%;
+max-width: 600px;
+background: rgba(255,255,255,0.2);
+border-radius: 10px;
+height: 10px;
+margin-bottom: 20px;
+}
 
-        .options { display: flex; flex-direction: column; gap: 12px; }
+.progress-bar-fill {
+height: 100%;
+background: #b7e4c7;
+border-radius: 10px;
+transition: width 0.3s;
+}
 
-        .option-label {
-        display: flex; align-items: center; gap: 14px;
-        background: #f0faf4;
-        border: 2.5px solid #b7e4c7;
-        border-radius: 14px;
-        padding: 14px 18px;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 0.97rem; font-weight: 600; color: #1a472a;
-        position: relative;
-        }
-        .option-label:hover { border-color: #52b788; background: #e8f5ee; }
+.question-card {
+background: white;
+padding: 25px;
+border-radius: 15px;
+max-width: 600px;
+width: 100%;
+display: none;
+}
 
-        .option-label input[type="radio"] { display: none; }
+.question-card.active {
+display: block;
+}
 
-        .option-label .radio-circle {
-        width: 22px; height: 22px; min-width: 22px;
-        border-radius: 50%;
-        border: 2.5px solid #b7e4c7;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.2s;
-        }
-        .option-label input:checked ~ .radio-circle,
-        .option-label.selected .radio-circle {
-        border-color: #2d6a4f;
-        background: #2d6a4f;
-        }
-        .option-label input:checked ~ .radio-circle::after,
-        .option-label.selected .radio-circle::after {
-        content: '';
-        width: 8px; height: 8px;
-        background: white; border-radius: 50%;
-        }
-        .option-label.selected {
-        border-color: #2d6a4f;
-        background: #e0f2e9;
-        }
+.options {
+margin-top: 15px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
 
-        /* Feedback certo/errado */
-        .option-label.correct {
-        border-color: #40916c !important;
-        background: #d8f3dc !important;
-        }
-        .option-label.wrong {
-        border-color: #e63946 !important;
-        background: #ffe0e3 !important;
-        }
+.option-label {
+padding: 10px;
+border: 2px solid #b7e4c7;
+border-radius: 10px;
+cursor: pointer;
+}
 
-        .feedback-msg {
-        margin-top: 16px;
-        padding: 12px 16px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        display: none;
-        }
-        .feedback-msg.show { display: block; }
-        .feedback-msg.acertou { background: #d8f3dc; color: #1b4332; }
-        .feedback-msg.errou   { background: #ffe0e3; color: #7b1e1e; }
+.option-label.correct { background: #d8f3dc; }
+.option-label.wrong { background: #ffe0e3; }
 
-        .btn-proximo {
-        margin-top: 22px;
-        width: 100%;
-        padding: 14px;
-        background: linear-gradient(135deg, #2d6a4f, #52b788);
-        color: white;
-        font-family: 'Fredoka One', cursive;
-        font-size: 1.2rem; letter-spacing: 1px;
-        border: none; border-radius: 14px;
-        cursor: pointer;
-        display: none;
-        transition: transform 0.15s, box-shadow 0.15s;
-        box-shadow: 0 6px 20px rgba(45,106,79,0.4);
-        }
-        .btn-proximo:hover { transform: translateY(-2px); }
-        .btn-proximo.show { display: block; }
-    </style>
-    </head>
-    <body>
+.feedback-msg {
+margin-top: 10px;
+display: none;
+font-weight: bold;
+}
 
-    <header>
-    <h1>🌿 ECOQuiz</h1>
-    <p>Olá, <strong>{{ nome }}</strong>! Responda com atenção 🌱</p>
-    </header>
+.feedback-msg.show { display: block; }
 
-    <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progressBar" style="width: {{ (1 / total * 100) | round(1) }}%"></div>
-    </div>
+.btn-proximo {
+margin-top: 15px;
+padding: 10px;
+background: #2d6a4f;
+color: white;
+border: none;
+cursor: pointer;
+display: none;
+}
 
-    <form action="/resultado" method="POST" id="quizForm">
-    {% for i, p in perguntas | enumerate %}
-    <div class="question-card {% if i == 0 %}active{% endif %}" id="card-{{ i }}">
-        <div class="question-num">Pergunta {{ i + 1 }} de {{ total }}</div>
-        <div class="question-text">{{ p.pergunta }}</div>
+.btn-proximo.show {
+display: block;
+}
+</style>
+</head>
 
-        <div class="options" id="options-{{ i }}">
-        {% for opcao in p.opcoes %}
-        <label class="option-label" id="lbl-{{ i }}-{{ loop.index0 }}">
-            <input type="radio" name="q{{ i }}" value="{{ opcao }}" data-correct="{{ p.resposta }}" data-qi="{{ i }}"/>
-            <span class="radio-circle"></span>
-            <span>{{ opcao }}</span>
-        </label>
-        {% endfor %}
-        </div>
+<body>
 
-        <div class="feedback-msg" id="feedback-{{ i }}"></div>
+<header>
+<h1>🌿 ECOQuiz</h1>
+<p>Olá, <strong>{{ nome }}</strong>!</p>
+</header>
 
-        <button type="{% if i == total - 1 %}submit{% else %}button{% endif %}"
-                class="btn-proximo" id="btn-{{ i }}"
-                {% if i != total - 1 %}onclick="proximaPergunta({{ i }})"{% endif %}>
-        {% if i == total - 1 %}Ver Resultado 🏆{% else %}Próxima →{% endif %}
-        </button>
-    </div>
-    {% endfor %}
-    </form>
+<div class="progress-bar-wrap">
+<div class="progress-bar-fill" id="progressBar"
+style="width: {{ (1 / (perguntas|length) * 100) | round(1) if perguntas|length > 0 else 0 }}%">
+</div>
+</div>
 
-    <script>
-    const total = {{ total }};
+<form action="/resultado" method="POST">
 
-    // Adiciona evento de seleção em cada rádio
-    document.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', function () {
-        const qi = parseInt(this.dataset.qi);
-        const correta = this.dataset.correct;
-        const escolhida = this.value;
+{% for p in perguntas %}
+{% set i = loop.index0 %}
 
-        // Remove seleção anterior
-        document.querySelectorAll(`#options-${qi} .option-label`).forEach(l => l.classList.remove('selected','correct','wrong'));
+<div class="question-card {% if i == 0 %}active{% endif %}" id="card-{{ i }}">
 
-        // Desabilita todos os radios desta pergunta
-        document.querySelectorAll(`input[name="q${qi}"]`).forEach(r => r.disabled = true);
+<h3>Pergunta {{ i + 1 }} de {{ perguntas|length }}</h3>
+<p>{{ p.pergunta }}</p>
 
-        // Marca cada opção
-        document.querySelectorAll(`#options-${qi} .option-label`).forEach(lbl => {
-            const val = lbl.querySelector('input').value;
-            if (val === correta) {
-            lbl.classList.add('correct');
-            } else if (val === escolhida) {
-            lbl.classList.add('wrong');
-            }
-        });
+<div class="options" id="options-{{ i }}">
+{% for opcao in p.opcoes %}
+<label class="option-label">
+<input type="radio" name="q{{ i }}" value="{{ opcao }}"
+data-correct="{{ p.resposta }}" data-qi="{{ i }}">
+{{ opcao }}
+</label>
+{% endfor %}
+</div>
 
-        // Feedback
-        const feedback = document.getElementById(`feedback-${qi}`);
-        if (escolhida === correta) {
-            feedback.textContent = '✅ Correto! Muito bem!';
-            feedback.className = 'feedback-msg show acertou';
-        } else {
-            feedback.textContent = `❌ Errado! A resposta correta era: "${correta}"`;
-            feedback.className = 'feedback-msg show errou';
-        }
+<div class="feedback-msg" id="feedback-{{ i }}"></div>
 
-        // Mostra botão próxima
-        document.getElementById(`btn-${qi}`).classList.add('show');
-        });
-    });
+<button type="{% if i == (perguntas|length) - 1 %}submit{% else %}button{% endif %}"
+class="btn-proximo" id="btn-{{ i }}"
+{% if i != (perguntas|length) - 1 %}onclick="proximaPergunta({{ i }})"{% endif %}>
 
-    function proximaPergunta(atual) {
-        document.getElementById(`card-${atual}`).classList.remove('active');
-        const proximo = atual + 1;
-        document.getElementById(`card-${proximo}`).classList.add('active');
+{% if i == (perguntas|length) - 1 %}
+Ver Resultado 🏆
+{% else %}
+Próxima →
+{% endif %}
+</button>
 
-        // Atualiza barra de progresso
-        const pct = ((proximo + 1) / total * 100).toFixed(1);
-        document.getElementById('progressBar').style.width = pct + '%';
+</div>
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    </script>
-    </body>
+{% endfor %}
+
+</form>
+
+<script>
+const total = {{ perguntas|length | tojson }};
+
+// Seleção de resposta
+document.querySelectorAll('input[type="radio"]').forEach(radio => {
+radio.addEventListener('change', function () {
+
+const qi = parseInt(this.dataset.qi);
+const correta = this.dataset.correct;
+const escolhida = this.value;
+
+// 🔥 BLOQUEIA sem usar disabled
+document.querySelectorAll(`#options-${qi} input`).forEach(r => {
+    r.style.pointerEvents = "none";
+});
+
+// Marca opções
+document.querySelectorAll(`#options-${qi} .option-label`).forEach(lbl => {
+const val = lbl.querySelector('input').value;
+
+if (val === correta) lbl.classList.add('correct');
+else if (val === escolhida) lbl.classList.add('wrong');
+});
+
+// Feedback
+const feedback = document.getElementById(`feedback-${qi}`);
+
+if (escolhida === correta) {
+feedback.textContent = '✅ Correto!';
+} else {
+feedback.textContent = `❌ Errado! Correta: ${correta}`;
+}
+
+feedback.classList.add('show');
+
+// Botão próxima
+document.getElementById(`btn-${qi}`).classList.add('show');
+
+});
+});
+
+// Próxima pergunta
+function proximaPergunta(atual) {
+document.getElementById(`card-${atual}`).classList.remove('active');
+
+const proximo = atual + 1;
+document.getElementById(`card-${proximo}`).classList.add('active');
+
+const pct = ((proximo + 1) / total * 100).toFixed(1);
+document.getElementById('progressBar').style.width = pct + '%';
+
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
 </html>

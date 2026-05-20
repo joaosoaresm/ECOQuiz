@@ -10,7 +10,7 @@ app.jinja_env.globals.update(enumerate=enumerate)
 
 # --- MongoDB ---
 try:
-    client = MongoClient("mongodb+srv://ecoquiz:hackathon@cluster0.pbhclmb.mongodb.net/")
+    client = MongoClient("mongodb+srv://Joao:extensaounip@cluster0.myod2.mongodb.net/quiz_db?retryWrites=true&w=majority")
     db = client.quiz_db
     ranking_collection = db.ranking
     print("✅ MongoDB conectado!")
