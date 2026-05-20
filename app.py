@@ -21,99 +21,99 @@ except Exception as e:
 # --- Perguntas de Sustentabilidade (nível 5º ano) ---
 PERGUNTAS = [
     {
-        "pergunta": "O que devemos fazer com garrafas plásticas para ajudar o meio ambiente?",
-        "opcoes": ["Jogar no rio", "Reciclar ou reutilizar", "Queimar no quintal", "Enterrar na terra"],
-        "resposta": "Reciclar ou reutilizar"
+        "pergunta": "Como a tecnologia pode ajudar a reduzir o uso de papel?",
+        "opcoes": ["Imprimindo mais documentos", "Usando arquivos digitais", "Jogando papéis fora", "Escrevendo em folhas maiores"],
+        "resposta": "Usando arquivos digitais"
     },
     {
-        "pergunta": "Por que é importante economizar água em casa?",
+        "pergunta": "Qual dessas ações usa tecnologia para ajudar o meio ambiente?",
         "opcoes": [
-            "Porque a água é infinita",
-            "Para pagar menos na conta",
-            "Porque a água limpa é um recurso limitado e precioso",
-            "Para deixar mais água para os peixes"
+            "Deixar o computador ligado o dia todo",
+            "Usar aplicativos para controlar o consumo de energia",
+            "Imprimir todos os e-mails",
+            "Jogar o celular no lixo comum"
         ],
-        "resposta": "Porque a água limpa é um recurso limitado e precioso"
+        "resposta": "Usar aplicativos para controlar o consumo de energia"
     },
     {
-        "pergunta": "O que é reciclagem?",
+        "pergunta": "O que fazer com aparelhos eletrônicos antigos?",
         "opcoes": [
-            "Jogar o lixo em qualquer lugar",
-            "Transformar materiais usados em novos produtos",
-            "Esconder o lixo embaixo da terra",
-            "Vender objetos velhos"
+            "Jogar no lixo comum",
+            "Guardar para sempre",
+            "Levar para reciclagem eletrônica",
+            "Queimar no quintal"
         ],
-        "resposta": "Transformar materiais usados em novos produtos"
+        "resposta": "Levar para reciclagem eletrônica"
     },
     {
-        "pergunta": "Qual dessas atitudes ajuda a economizar energia elétrica?",
+        "pergunta": "Como a internet pode ajudar na sustentabilidade?",
         "opcoes": [
-            "Deixar as luzes acesas em todos os cômodos",
-            "Usar o ar-condicionado com a janela aberta",
-            "Apagar as luzes ao sair de um cômodo",
-            "Deixar o televisor ligado sem assistir"
+            "Aumentando o consumo de papel",
+            "Facilitando o acesso a informações ambientais",
+            "Destruindo florestas",
+            "Poluindo rios"
         ],
-        "resposta": "Apagar as luzes ao sair de um cômodo"
+        "resposta": "Facilitando o acesso a informações ambientais"
     },
     {
-        "pergunta": "O que acontece quando as florestas são desmatadas?",
+        "pergunta": "Qual atitude economiza energia ao usar tecnologia?",
         "opcoes": [
-            "Surgem mais animais silvestres",
-            "O ar fica mais limpo",
-            "Muitos animais perdem seu habitat e podem desaparecer",
-            "Chove mais na região"
+            "Deixar o computador ligado sem uso",
+            "Desligar dispositivos quando não estiver usando",
+            "Aumentar o brilho ao máximo sempre",
+            "Usar vários aparelhos ao mesmo tempo sem necessidade"
         ],
-        "resposta": "Muitos animais perdem seu habitat e podem desaparecer"
+        "resposta": "Desligar dispositivos quando não estiver usando"
     },
     {
-        "pergunta": "Para que serve a coleta seletiva de lixo?",
+        "pergunta": "O que é lixo eletrônico?",
         "opcoes": [
-            "Para deixar as ruas mais coloridas",
-            "Para separar os materiais e facilitar a reciclagem",
-            "Para juntar todo o lixo em um único lugar",
-            "Para queimar o lixo com mais facilidade"
+            "Restos de comida",
+            "Papéis usados",
+            "Equipamentos eletrônicos descartados",
+            "Garrafas de plástico"
         ],
-        "resposta": "Para separar os materiais e facilitar a reciclagem"
+        "resposta": "Equipamentos eletrônicos descartados"
     },
     {
-        "pergunta": "O que é energia solar?",
+        "pergunta": "Como aplicativos podem ajudar no consumo de água?",
         "opcoes": [
-            "Energia gerada pela queima de carvão",
-            "Energia que vem da força do vento",
-            "Energia gerada aproveitando a luz do Sol",
-            "Energia produzida pela água dos rios"
+            "Aumentando o gasto de água",
+            "Controlando e monitorando o uso de água",
+            "Desperdiçando água automaticamente",
+            "Bloqueando o acesso à água"
         ],
-        "resposta": "Energia gerada aproveitando a luz do Sol"
+        "resposta": "Controlando e monitorando o uso de água"
     },
     {
-        "pergunta": "Por que devemos evitar o uso excessivo de sacolas plásticas?",
+        "pergunta": "Qual dessas opções é uma tecnologia sustentável?",
         "opcoes": [
-            "Porque são muito caras",
-            "Porque demoram centenas de anos para se decompor na natureza",
-            "Porque são muito pesadas",
-            "Porque deixam as compras mais difíceis"
+            "Servidores que gastam muita energia",
+            "Uso de energia solar em data centers",
+            "Queima de carvão para gerar energia",
+            "Uso excessivo de papel em escritórios"
         ],
-        "resposta": "Porque demoram centenas de anos para se decompor na natureza"
+        "resposta": "Uso de energia solar em data centers"
     },
     {
-        "pergunta": "O que significa 'reduzir, reutilizar e reciclar'?",
+        "pergunta": "Como reduzir o impacto ambiental ao usar celular?",
         "opcoes": [
-            "Comprar mais coisas novas sempre que possível",
-            "Jogar fora tudo que não usa mais",
-            "Consumir menos, aproveitar os objetos e reciclar o lixo",
-            "Guardar todo o lixo dentro de casa"
+            "Trocar de celular todo ano",
+            "Usar até o fim da vida útil e descartar corretamente",
+            "Jogar no lixo comum",
+            "Deixar sempre carregando"
         ],
-        "resposta": "Consumir menos, aproveitar os objetos e reciclar o lixo"
+        "resposta": "Usar até o fim da vida útil e descartar corretamente"
     },
     {
-        "pergunta": "Qual das opções é um exemplo de energia renovável?",
+        "pergunta": "O que significa usar tecnologia de forma consciente?",
         "opcoes": [
-            "Petróleo",
-            "Carvão mineral",
-            "Gás natural",
-            "Energia eólica (vento)"
+            "Usar sem se preocupar com o consumo",
+            "Consumir mais energia sempre",
+            "Usar tecnologia evitando desperdícios",
+            "Deixar todos os aparelhos ligados"
         ],
-        "resposta": "Energia eólica (vento)"
+        "resposta": "Usar tecnologia evitando desperdícios"
     }
 ]
 
